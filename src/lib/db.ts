@@ -31,7 +31,12 @@ const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 class MockDB {
   private get<T>(key: string): T[] {
     const data = localStorage.getItem(key);
-    return data ? JSON.parse(data) : [];
+    if (!data) return [];
+    try {
+      return JSON.parse(data);
+    } catch (e) {
+      return [];
+    }
   }
 
   private set<T>(key: string, data: T[]) {
@@ -120,17 +125,20 @@ class MockDB {
 export const db = new MockDB();
 
 // Initialize some mock data if empty
-if (!localStorage.getItem('jobs')) {
-  db.createJob({
-    title: 'Frontend Engineer',
-    company: 'TechCorp',
-    description: 'Looking for a skilled React developer to build modern web applications.',
-    requirements: ['React', 'TypeScript', 'Tailwind CSS']
-  });
-  db.createJob({
-    title: 'Data Scientist',
-    company: 'DataWorks',
-    description: 'Join our analytics team to build predictive models.',
-    requirements: ['Python', 'Machine Learning', 'SQL']
-  });
-}
+const initMockData = async () => {
+  if (!localStorage.getItem('jobs')) {
+    await db.createJob({
+      title: 'Frontend Engineer',
+      company: 'TechCorp',
+      description: 'Looking for a skilled React developer to build modern web applications.',
+      requirements: ['React', 'TypeScript', 'Tailwind CSS']
+    });
+    await db.createJob({
+      title: 'Data Scientist',
+      company: 'DataWorks',
+      description: 'Join our analytics team to build predictive models.',
+      requirements: ['Python', 'Machine Learning', 'SQL']
+    });
+  }
+};
+initMockData();

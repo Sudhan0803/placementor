@@ -1,5 +1,6 @@
 {
   "name": "react-example",
+  "homepage": "https://sudhan0803.github.io/placementor",
   "private": true,
   "version": "0.0.0",
   "type": "module",
